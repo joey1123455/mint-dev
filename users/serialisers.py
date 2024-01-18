@@ -1,6 +1,7 @@
 # myapp/serializers.py
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,3 +12,15 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
         return user
+    
+class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
+    def validate(self, attrs):
+        user = authenticate(**attrs)
+        
+        if not user:
+            raise serializers.ValidationError("Invalid username or password.")
+        
+        return attrs
