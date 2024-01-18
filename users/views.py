@@ -14,3 +14,8 @@ class UserRegistrationView(generics.CreateAPIView):
         user = serializer.save()
         token, created = Token.objects.get_or_create(user=user)
         return Response({'token': token.key})
+    
+    def login(self, serializer):
+        user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
