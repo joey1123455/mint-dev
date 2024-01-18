@@ -4,9 +4,10 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from .serialisers import UserSerializer
+from .serialisers import UserSerializer, UserLoginSerializer
 from django.contrib.auth import authenticate
-from .serialisers import LoginSerializer
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework import status
 
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -19,19 +20,13 @@ class UserRegistrationView(generics.CreateAPIView):
         response.data['token'] = token.key
         return response
 
-class UserLoginView(generics.CreateAPIView):
-    serializer_class = LoginSerializer
 
-    def login(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+class UserLoginView(ObtainAuthToken):
+    serializer_class = UserLoginSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
-        user = authenticate(
-            username=serializer.validated_data['username'],
-            password=serializer.validated_data['password']
-        )
-        
-        if not user:
-            return Response({'error': 'Invalid username or password'}, status=400)
-
+        user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key})
+        return Response({'token': token.key, 'user_id': user.id}, status=status.HTTP_200_OK)

@@ -13,14 +13,19 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
     
-class LoginSerializer(serializers.ModelSerializer):
+class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField()
-    password = serializers.CharField()
+    password = serializers.CharField(write_only=True)
 
-    def validate(self, attrs):
-        user = authenticate(**attrs)
-        
-        if not user:
-            raise serializers.ValidationError("Invalid username or password.")
-        
-        return attrs
+    def validate(self, data):
+        username = data.get('username')
+        password = data.get('password')
+
+        if username and password:
+            user = User.objects.filter(username=username).first()
+
+            if user and user.check_password(password):
+                data['user'] = user
+                return data
+
+        raise serializers.ValidationError("Invalid login credentials")
