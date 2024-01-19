@@ -22,5 +22,5 @@ urlpatterns = [
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),
     path('api/', include('users.urls')),
     path('api/', include('profiles.urls')),
-    path('api/', include('management.urls')),
+    path('api/', include('stores.urls'))
 ]
