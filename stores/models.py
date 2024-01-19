@@ -1,9 +1,11 @@
 import uuid
 from django.db import models
+from profiles.models import Vendor
 from django.contrib.auth.models import User
 
 class Products(models.Model):
     name = models.CharField(max_length=200)
+    vendor = models.OneToOneField(Vendor, on_delete=models.CASCADE)
     price = models.IntegerField()
     product_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     description = models.TextField()
