@@ -1,7 +1,9 @@
-# profile/urls.py
-from django.urls import path
-from .views import UserProfileView
+# urls.py
+from django.urls import path, include
+from .views import VendorCreateAPIView, VendorListAPIView, VendorDetailAPIView
 
 urlpatterns = [
-    path('profile/', UserProfileView.as_view(), name='user-profile'),
+    path('vendors/create/', VendorCreateAPIView.as_view(), name='vendor-create'),
+    path('vendors/list', VendorListAPIView.as_view(), name='vendor-list'),
+    path('vendors/<uuid:vendor_id>', VendorDetailAPIView.as_view(), name='vendor-detail-api'),
 ]
