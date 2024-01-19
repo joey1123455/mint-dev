@@ -35,4 +35,29 @@ class VendorViewSerializer(serializers.ModelSerializer):
         model = Vendor
         fields = "__all__"
 
+class CreateCustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Customer
+        fields = ['account_number', 'bvn', 'bank', 'first_name', 'last_name', 'phone_number', 'vendor_id', 'user', 'wallet']
 
+    def create(self, validated_data):
+        # Extract the wallet data from the validated data
+        wallet_data = validated_data.pop('wallet', None)
+        
+
+        # Create the Vendor instance
+        vendor = Vendor.objects.create(**validated_data)
+
+        # If wallet data is provided, create or update the Wallet instance
+        if wallet_data:
+            wallet, created = Wallet.objects.update_or_create(user=vendor.user, defaults=wallet_data)
+            vendor.wallet = wallet
+            vendor.save()
+
+        return vendor
+    
+
+class CustomerViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vendor
+        fields = "__all__"

@@ -7,13 +7,13 @@ from rest_framework.authentication import TokenAuthentication
 # myapp/views.py
 from rest_framework import status
 from rest_framework.views import APIView
-from .serilizers import VendorCreateSerializer, VendorEditSerializer, VendorViewSerializer
+from .serilizers import VendorCreateSerializer, VendorEditSerializer, VendorViewSerializer, CreateCustomerSerializer, CustomerViewSerializer
 from squad import Squad
 from dotenv import load_dotenv
 import os
 import uuid
 from wallets.models import Wallet
-from .models import Vendor
+from .models import Vendor, Customer
 
 # Load variables from .env file
 load_dotenv()
@@ -86,5 +86,59 @@ class VendorDetailAPIView(APIView):
 
     def get(self, request, vendor_id):
         vendor = Vendor.objects.get(vendor_id=vendor_id)
+        serializer = VendorViewSerializer(vendor)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class CustomerCreateAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, request, *args, **kwargs):
+            
+            wallet_data = {
+                'bvn': request.data.get('bvn', None),
+                'account_number': request.data.get('account_number', None),
+                'user': request.user,
+            }
+            
+
+            # wallet, created = Wallet.objects.get_or_create(**wallet_data)
+
+            # Update request data with Wallet instance (not just ID)
+            request.data['user'] = request.user.id
+
+            serializer = CreateCustomerSerializer(data=request.data)
+            try:
+                serializer.is_valid(raise_exception=True)
+            except ValidationError as e:
+                return Response({'error': e.detail}, status=status.HTTP_400_BAD_REQUEST)
+
+            serializer.validated_data["wallet"] = wallet_data
+            # serializer.validated_data["wallet"] = wallet.wallet_id
+            serializer.save()
+
+            return Response({"message": "success"}, status=status.HTTP_201_CREATED)
+
+
+class CustomerListAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        # Retrieve all vendors
+        vendors = Customer.objects.all()
+
+        # Serialize the vendor data
+        serializer = VendorViewSerializer(vendors, many=True)
+
+        # Return the serialized data as a JSON response
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class CustomerDetailAPIView(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, vendor_id):
+        vendor = Customer.objects.get(customer_id=vendor_id)
         serializer = VendorViewSerializer(vendor)
         return Response(serializer.data, status=status.HTTP_200_OK)
