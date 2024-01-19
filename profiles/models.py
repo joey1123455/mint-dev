@@ -30,6 +30,7 @@ class Customer(models.Model):
         return f"Customer - {self.first_name}"
     
 
+# make i help him life
 class Vendor(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     account_number = models.CharField(max_length=20, unique=True)
