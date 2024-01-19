@@ -36,6 +36,8 @@ class Vendor(models.Model):
     wallet = models.OneToOneField(Wallet, on_delete=models.CASCADE, null=True)
     virtual_account_number = models.CharField(max_length=20, unique=True)
     bank = models.CharField(max_length=200)
+    business_name = models.CharField(max_length=200)
+    business_phone_number = models.CharField(max_length=20)
 
     def __str__(self):
         return f"Vendor - {self.profile.user.username}"
