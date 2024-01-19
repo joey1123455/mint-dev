@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'users',
     'profiles',
     'wallets',
-    'management'
+    'stores',
 ]
 
 MIDDLEWARE = [
