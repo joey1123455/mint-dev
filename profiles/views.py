@@ -18,6 +18,7 @@ from .models import Vendor, Customer
 # Load variables from .env file
 load_dotenv()
 
+
 class VendorCreateAPIView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
