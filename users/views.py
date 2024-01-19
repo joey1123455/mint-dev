@@ -4,7 +4,9 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import User
-from .serialisers import UserSerializer, UserLoginSerializer
+
+from users.models import Vendor
+from .serialisers import UserSerializer, UserLoginSerializer, VendorSerializer
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework import status
