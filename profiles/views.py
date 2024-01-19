@@ -7,7 +7,7 @@ from rest_framework.authentication import TokenAuthentication
 # myapp/views.py
 from rest_framework import status
 from rest_framework.views import APIView
-from .serilizers import VendorCreateSerializer, VendorEditSerializer, VendorViewSerializer, CreateCustomerSerializer, CustomerViewSerializer
+from .serilizers import VendorCreateSerializer, VendorViewSerializer, CreateCustomerSerializer, CustomerViewSerializer
 from squad import Squad
 from dotenv import load_dotenv
 import os
@@ -129,7 +129,7 @@ class CustomerListAPIView(APIView):
         vendors = Customer.objects.all()
 
         # Serialize the vendor data
-        serializer = VendorViewSerializer(vendors, many=True)
+        serializer = CustomerViewSerializer(vendors, many=True)
 
         # Return the serialized data as a JSON response
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -140,5 +140,5 @@ class CustomerDetailAPIView(APIView):
 
     def get(self, request, vendor_id):
         vendor = Customer.objects.get(customer_id=vendor_id)
-        serializer = VendorViewSerializer(vendor)
+        serializer = CustomerViewSerializer(vendor)
         return Response(serializer.data, status=status.HTTP_200_OK)
