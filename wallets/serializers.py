@@ -1,7 +1,7 @@
 
 # serializers.py
 from rest_framework import serializers
-from .models import Wallet
+from .models import Wallet, Transactions
 
 class WalletAddMoneySerializer(serializers.Serializer):
     wallet_id = serializers.UUIDField()
@@ -10,4 +10,9 @@ class WalletAddMoneySerializer(serializers.Serializer):
 class WalletSerializer(serializers.ModelSerializer):
     class Meta:
         model = Wallet
-        fields = ['balance', 'pin', 'limit_level', 'wallet_id', 'account_number', 'bank', 'bvn', 'user']
+        fields = "__all__"
+
+class TransactionsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transactions
+        fields = '__all__'
