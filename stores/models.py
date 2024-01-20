@@ -10,7 +10,7 @@ class Products(models.Model):
     price = models.IntegerField()
     product_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     description = models.TextField()
-    image = CloudinaryField('image')
+    image = CloudinaryField('image', default="~/Desktop/Downloads/pngwing.com.png")
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
