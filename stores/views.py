@@ -10,9 +10,24 @@ from rest_framework.permissions import IsAuthenticated
 from .permissions import IsVendorUser
 from rest_framework.decorators import permission_classes
 from rest_framework.authentication import TokenAuthentication
+from cloudinary import uploader
+import cloudinary
+import uuid
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Create your views here.
 # @permission_classes([IsAuthenticated])
+
+cloudinary.config(
+    cloud_name = os.getenv('CLOUD_NAME'),
+    api_key = os.getenv('API_KEY'),
+    api_secret = os.getenv('API_SECRET'),
+    secure = True
+    )
+
 
 class AddProduct(APIView):
     permission_classes = [IsAuthenticated, IsVendorUser]
@@ -28,9 +43,23 @@ class AddProduct(APIView):
             raise PermissionDenied("Only vendors can create products.")
 
     def post(self, request):
+        vendor_id = request.data.get('vendor_id')
+        name = request.data.get('name')
+        print(vendor_id)
+        vendor_id = int(vendor_id)
+        ven = Vendor.objects.get(id=vendor_id)
+        request.data['vendor'] = ven.id
         serializer = ProductsSerializer(data=request.data)
         if serializer.is_valid():
+            res = uploader.upload(serializer.validated_data.get('image'),
+                overwrite=True,
+                folder="mint/uploads/",
+                resorce_type="auto",
+                public_id=name,
+            )
+            print(res)
             self.perform_create(serializer)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     

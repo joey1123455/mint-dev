@@ -11,6 +11,7 @@ class Products(models.Model):
     product_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     description = models.TextField()
     image = CloudinaryField('image', default="~/Desktop/Downloads/pngwing.com.png")
+    # image_url = models.CharField()
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
