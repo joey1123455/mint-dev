@@ -80,7 +80,7 @@ class LoadWalletAPIView(APIView):
             res = self.squad_obj.payments.initiate_transaction(data)
             if res["status"] != 200:
                 return Response({'error': res["message"]}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({'payment_link': res["data"]["checkout_url"]}, status=status.HTTP_204_NO_CONTENT)
+            return Response({'payment_link': res["data"]}, status=status.HTTP_200_OK)
         except ValidationError as e:
             return Response({'error': e.detail}, status=status.HTTP_400_BAD_REQUEST)
 
