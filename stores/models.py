@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from profiles.models import Vendor
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 class Products(models.Model):
     name = models.CharField(max_length=200)
@@ -9,6 +10,7 @@ class Products(models.Model):
     price = models.IntegerField()
     product_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     description = models.TextField()
+    image = CloudinaryField('image')
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -7,11 +7,12 @@ class IsVendorUser(BasePermission):
     """
 
     def has_permission(self, request, view):
-        id = request.user.id
-        try:
-            vendor = Vendor.objects.get(user_id=id)
-            return True
-        except:
-            return False
+        if request.method == "POST":
+            id = request.user.id
+            try:
+                vendor = Vendor.objects.filter(user_id=id)
+                return True
+            except:
+                return False
 
 
