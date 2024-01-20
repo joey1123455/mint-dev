@@ -14,3 +14,18 @@ class Wallet(models.Model):
 
     def __str__(self):
         return f"Wallet - {self.wallet_id} ({self.user.username})"
+    
+class Transactions(models.Model):
+    wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_id = models.UUIDField(unique=True)
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField(auto_now=True)
+    previous_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    new_balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    status = models.CharField(max_length=20)
+    type = models.CharField(max_length=20)
+
+
+    def __str__(self):
+        return f"Transaction - {self.transaction_id} ({self.wallet.user.username})"

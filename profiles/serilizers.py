@@ -2,6 +2,7 @@
 from rest_framework import serializers
 from .models import Customer, Vendor
 from wallets.models import Wallet
+from wallets.serializers import WalletSerializer
 
 class VendorCreateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -30,10 +31,18 @@ class VendorEditSerializer(serializers.ModelSerializer):
         fields = ['virtual_account_number', 'bank', 'business_name', 'business_phone_number']
 
 
+# class VendorViewSerializer(serializers.ModelSerializer):
+#     wallet = WalletSerializer()
+#     class Meta:
+#         model = Vendor
+#         fields = ["__all__", wallet]
+        
 class VendorViewSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Vendor
         fields = "__all__"
+
 
 class CreateCustomerSerializer(serializers.ModelSerializer):
     class Meta:
